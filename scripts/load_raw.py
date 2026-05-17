@@ -39,7 +39,10 @@ def load_csv_to_posgres():
 
 	for table_name, file_name in dct_table.items():
 		try:    
-			df = pd.read_csv(f"{current_directory}/data/raw/{file_name}")
+			df = pd.read_csv(f"{current_directory}/data/raw/{file_name}",  
+					dtype={'customer_zip_code_prefix': str,
+							'geolocation_zip_code_prefix':str,
+							'seller_zip_code_prefix':str})
 			# Опционально очистить данные перед загрузкой
 			# df = df.fillna(0).
 			df.to_sql(
