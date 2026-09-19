@@ -4,3 +4,8 @@ __pycache__/
 .env
 *.csv
 .venv
+.claude/worktrees/
+logs/
+config/
+plugins/
+.idea/
