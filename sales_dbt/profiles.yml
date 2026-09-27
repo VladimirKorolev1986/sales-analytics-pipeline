@@ -1,0 +1,12 @@
+sales_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('SALES_DB_HOST') }}"
+      port: "{{ env_var('SALES_DB_PORT') | as_number }}"
+      user: "{{ env_var('SALES_DB_USER') }}"
+      password: "{{ env_var('SALES_DB_PASSWORD') }}"
+      dbname: "{{ env_var('SALES_DB_NAME') }}"
+      schema: dbt_dev
+      threads: 4
