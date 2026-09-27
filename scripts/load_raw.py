@@ -24,7 +24,7 @@ dct_table = {
 
 def load_csv_to_postgres(engine):
 	with engine.connect() as conn:
-		conn.execute(text("CREATE SCHEMA IF NOT EXISTS staging"))
+		conn.execute(text("CREATE SCHEMA IF NOT EXISTS raw"))
 		conn.commit()
 
 	for table_name, file_name in dct_table.items():
@@ -38,7 +38,7 @@ def load_csv_to_postgres(engine):
 			df.to_sql(
 				name=table_name,
 				con=engine,
-				schema='staging',
+				schema='raw',
 				if_exists='replace',
 				index=False
 			)

@@ -15,7 +15,7 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 
-def run_load_staging():
+def run_load_raw():
     import load_raw
     hook = PostgresHook(postgres_conn_id='sales_db')
     engine = hook.get_sqlalchemy_engine()
@@ -31,7 +31,7 @@ with DAG(
 
 
 
-    load_staging = PythonOperator(
-        task_id='load_staging',
-        python_callable=run_load_staging,
+    load_raw = PythonOperator(
+        task_id='load_raw',
+        python_callable=run_load_raw,
     )
