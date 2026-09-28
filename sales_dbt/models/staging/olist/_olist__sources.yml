@@ -1,0 +1,17 @@
+version: 2
+
+sources:
+  - name: olist
+    description: "Cырые данные Olist, загружаются load_raw.py"
+    schema: raw
+    tables:
+      - name: olist_orders_dataset
+        columns:
+          - name: order_id
+          - name: customer_id
+          - name: order_status
+          - name: order_purchase_timestamp
+          - name: order_approved_at
+          - name: order_delivered_carrier_date
+          - name: order_delivered_customer_date
+          - name: order_estimated_delivery_date
