@@ -15,3 +15,26 @@ sources:
           - name: order_delivered_carrier_date
           - name: order_delivered_customer_date
           - name: order_estimated_delivery_date
+      - name: olist_customers_dataset
+        columns:
+          - name: customer_id
+          - name: customer_unique_id
+          - name: customer_zip_code_prefix
+          - name: customer_city
+          - name: customer_state
+      - name: olist_order_payments_dataset
+        columns:
+          - name: order_id
+          - name: payment_sequential
+          - name: payment_type
+          - name: payment_installments
+          - name: payment_value
+      - name: olist_order_items_dataset
+        columns:
+          - name: order_id
+          - name: order_item_id
+          - name: product_id
+          - name: seller_id
+          - name: shipping_limit_date
+          - name: price
+          - name: freight_value
