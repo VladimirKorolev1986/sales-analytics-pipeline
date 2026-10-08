@@ -1,0 +1,161 @@
+version: 2
+
+models:
+  - name: stg_olist__category_translation
+    description: >
+      Staging-модель перевода категорий. Хранит перевод категорий.
+      Гранулярность: одна категория на португальском - одна категория на английском
+    columns:
+      - name: product_category_name
+        description: "Название категории на оригинальном (португальском) языке"
+        data_tests:
+          - unique
+          - not_null
+      - name: product_category_name_english
+        description: "Название категории на английском языке"
+        data_tests:
+          - unique
+          - not_null
+  - name: stg_olist__customers
+    description: >
+      Staging-модель клиентов. Переименовывает колонки из raw_customers.
+      Гранулярность: одна строка на клиента.
+    columns:
+      - name: customer_id
+        description: "ID клиента в рамках одного заказа"
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_unique_id
+        description: "ID уникального клиента"
+        data_tests:
+          - not_null
+      - name: customer_zip_code_prefix
+        description: "ZIP code"
+      - name: customer_city
+        description: "Город клиента"
+      - name: customer_state
+        description: "Штат клиента"
+  - name: stg_olist__order_items
+    description: >
+      Staging-модель позиций заказа
+      Гранулярность: один товар в заказе - одна строка.
+    columns:
+      # Составной первичный ключ
+      - name: order_id
+        description: "Уникальный идентификатор самого заказа"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_olist__orders')
+                field: order_id
+      - name: order_item_id
+        description: "Порядковый номер позиции внутри заказа (1, 2, 3 ...)"
+        data_tests:
+          - not_null
+      - name: product_id
+        description: "ID Товара"
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_olist__products')
+                field: product_id
+      - name: seller_id
+        description: "ID продавца, у которого купили товар"
+      - name: shipping_limit_date
+        description: "Крайний срок доставки "
+      - name: price
+        description: "Цена товара"
+      - name: freight_value
+        description: "Стоимость доставки"
+  - name: stg_olist__order_payments
+    description: >
+      Staging-модель платежей по заказу
+      Гранулярность: один платеж по одному заказу - одна строка.
+    columns:
+      - name: order_id
+        description: "Уникальный идентификатор самого заказа"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_olist__orders')
+                field: order_id
+      - name: payment_sequential
+        description: "Порядковый номер платежа внутри одного заказа"
+      - name: payment_type
+        description: "Тип оплаты. not_defined - 3 платежа с нулевой суммой по отменённым заказам"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [ 'boleto', 'debit_card', 'voucher', 'credit_card', 'not_defined']
+              config:
+                severity: warn
+      - name: payment_installments
+        description: "Количество платежей на которые разбит заказ"
+      - name: payment_value
+        description: "Размер оплаты"
+  - name: stg_olist__orders
+    description: >
+      Staging-модель заказов
+      Гранулярность: один заказ - одна строка.
+    columns:
+      - name: order_id
+        description: "Уникальный идентификатор самого заказа"
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "ID покупателя"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_olist__customers')
+                field: customer_id
+      - name: order_status
+        description: "Статус заказа"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [ 'shipped', 'unavailable', 'invoiced', 'created', 'approved', 'processing', 'delivered', 'canceled' ]
+              config:
+                severity: warn
+      - name: order_purchase_timestamp
+        description: "Время в которое заказ был совершен"
+      - name: order_approved_at
+        description: "Время принятия заказа"
+      - name: order_delivered_carrier_date
+        description: "Фактическое время передачи заказа в логистическую службу"
+      - name: order_delivered_customer_date
+        description: "Фактическая дата и время принятия заказа покупателем"
+      - name: order_estimated_delivery_date
+        description: "Ожидаемая (расчетная дата доставки заказа)"
+  - name: stg_olist__products
+    description: >
+      Staging-модель товаров
+      Гранулярность: один товар - одна строка.
+    columns:
+      - name: product_id
+        description: "ID продукта"
+        data_tests:
+          - unique
+          - not_null
+      - name: product_category_name
+        description: "Названии категории"
+      - name: product_name_length
+        description: "Длина названия"
+      - name: product_description_length
+        description: "Длина описания товара"
+      - name: product_photos_qty
+        description: "Количество фотографий"
+      - name: product_weight_g
+        description: "Масса продукта"
+      - name: product_length_cm
+        description: "Длина продукта"
+      - name: product_height_cm
+        description: "Высота продукта"
+      - name: product_width_cm
+        description: "Ширина продукта"
+
