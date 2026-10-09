@@ -1,5 +1,5 @@
 import pandas as pd
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, inspect
 from dotenv import load_dotenv
 from pathlib import Path
 import os
@@ -33,16 +33,18 @@ def load_csv_to_postgres(engine):
 					dtype={'customer_zip_code_prefix': str,
 							'geolocation_zip_code_prefix':str,
 							'seller_zip_code_prefix':str})
-			# Опционально очистить данные перед загрузкой
-			# df = df.fillna(0).
-			df.to_sql(
-				name=table_name,
-				con=engine,
-				schema='raw',
-				if_exists='replace',
-				index=False
-			)
-			print(f'Таблица {table_name} успешно записана')
+
+			with engine.begin() as conn:
+				if inspect(engine).has_table(table_name, schema='raw'):
+					conn.execute(text(f"TRUNCATE TABLE raw.{table_name}"))
+				df.to_sql(
+					name=table_name,
+					con=conn,
+					schema='raw',
+					if_exists='append',
+					index=False
+				)
+				print(f'Таблица {table_name} успешно записана')
 		except Exception as e:
 			print(f'Ошибка при загрузке {table_name}: {e}')
 			raise
