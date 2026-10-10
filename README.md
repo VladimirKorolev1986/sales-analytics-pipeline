@@ -8,21 +8,12 @@ CSV → Airflow DAG (load_raw.py) → Postgres raw → dbt (staging → core →
 
 ## Run
 Download https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
-```git clone VladimirKorolev1986/sales-analytics-pipeline```
-```pip install -r requirements.txt```
+```bash
+git clone https://github.com/VladimirKorolev1986/sales-analytics-pipeline
+cd sales-analytics-pipeline
+pip install -r requirements.txt
+```
 
-To do.env at the root of the project
-SALES_DB_HOST=****
-SALES_DB_PORT=****
-SALES_DB_NAME=****
-SALES_DB_USER=****
-SALES_DB_PASSWORD=****
-
-FERNET_KEY=****
-AIRFLOW_UID=****
-AIRFLOW_PROJ_DIR=****
-
-AIRFLOW_CONN_SALES_DB=****
 
 
 ## Done 
